@@ -54,8 +54,23 @@ def transform_post(raw_post_data: dict) -> dict:
         - For fetched_at, use datetime.now(timezone.utc) to record
           the moment OUR pipeline processed this post.
     """
-    pass  # Remove this line when you implement the function
+    post_id = f"t3_{raw_post_data['id']}"
 
+    permalink = f"https://www.reddit.com{raw_post_data['permalink']}"
+
+    fetched_at = datetime.now(timezone.utc)
+
+    return {
+        "post_id": post_id,
+        "title": raw_post_data["title"],
+        "author": raw_post_data["author"],
+        "score": int(raw_post_data["score"]),
+        "num_comments": int(raw_post_data["num_comments"]),
+        "url": raw_post_data["url"],
+        "permalink": permalink,
+        "created_utc": float(raw_post_data["created_utc"]),
+        "fetched_at": fetched_at
+    }
 
 def transform_posts(raw_json: dict) -> list:
     """
@@ -77,4 +92,7 @@ def transform_posts(raw_json: dict) -> list:
         HINT: A list comprehension works well here:
             return [transform_post(child["data"]) for child in raw_json["data"]["children"]]
     """
-    pass  # Remove this line when you implement the function
+    if not raw_json or "data" not in raw_json or "children" not in raw_json["data"]:
+        return []
+        
+    return [transform_post(child["data"]) for child in raw_json["data"]["children"]]
