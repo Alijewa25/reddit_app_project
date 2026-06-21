@@ -54,26 +54,37 @@ class Post(Base):
     __tablename__ = "posts"
 
     # TODO: id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+
 
     # TODO: post_id = Column(String, unique=True, nullable=False)
+    post_id = Column(String, unique=True, nullable=False)
 
     # TODO: title = Column(String, nullable=False)
+    title = Column(String, nullable=False)
 
     # TODO: author = Column(String, nullable=False)
+    author = Column(String, nullable=False)
 
     # TODO: score = Column(Integer, nullable=False)
+    score = Column(Integer, nullable=False)
 
     # TODO: num_comments = Column(Integer, nullable=False)
+    num_comments = Column(Integer, nullable=False)
 
     # TODO: url = Column(String, nullable=False)
+    url = Column(String, nullable=False)
 
     # TODO: permalink = Column(String, nullable=False)
+    permalink = Column(String, nullable=False)
 
     # TODO: created_utc = Column(Float, nullable=False)
+    created_utc = Column(Float, nullable=False)
 
     # TODO: fetched_at = Column(DateTime, nullable=False)
-
+    fetched_at = Column(DateTime, nullable=False)
+    
     def __repr__(self):
         # TODO: return something like:
         # f"<Post id={self.id} title={self.title[:30]!r} score={self.score}>"
-        pass
+        return f"<Post id={self.id} title={self.title[:30]!r} score={self.score}>"
