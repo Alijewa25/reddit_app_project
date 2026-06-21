@@ -11,9 +11,9 @@ Three independent pieces, talking to each other through well-defined boundaries:
 ```
 ┌────────────────────────────────────────────────────────────────────┐
 │                                                                      │
-│   reddit.com/r/programming/top.json                                │
+│   lobste.rs/hottest.json                                            │
 │            │                                                        │
-│            │  HTTP GET (no auth needed, just a User-Agent header)   │
+│            │  HTTP GET (no auth needed — fully public endpoint)      │
 │            ▼                                                        │
 │   ┌──────────────────────┐                                          │
 │   │   DATA PIPELINE        │  Runs on a schedule (or manually)      │
@@ -22,7 +22,7 @@ Three independent pieces, talking to each other through well-defined boundaries:
 │              │  writes rows                                         │
 │              ▼                                                       │
 │   ┌──────────────────────┐                                          │
-│   │   reddit.db              │  A single SQLite file                │
+│   │   lobsters.db              │  A single SQLite file                │
 │   │   (SQLite database)       │  Shared by pipeline + backend        │
 │   └──────────┬───────────┘                                          │
 │              │  reads rows                                          │
@@ -69,14 +69,14 @@ Both the Data Engineer's pipeline and the Backend Developer's API need to agree 
 | Column | Type | Meaning |
 |---|---|---|
 | `id` | Integer | Internal database row id (auto-generated) |
-| `post_id` | String | Reddit's own unique id, e.g. `"t3_1abcde"` |
+| `post_id` | String | Lobsters' own unique id, e.g. `"xacdsk"` |
 | `title` | String | Post title |
-| `author` | String | Reddit username of the poster |
+| `author` | String | Lobsters username of the poster |
 | `score` | Integer | Upvotes |
 | `num_comments` | Integer | Comment count |
 | `url` | String | What the post links to |
-| `permalink` | String | Link to the comments page on reddit.com |
-| `created_utc` | Float | When the post was made on Reddit (Unix timestamp) |
+| `permalink` | String | Link to the comments page on lobste.rs |
+| `created_utc` | Float | When the post was made on Lobsters (Unix timestamp) |
 | `fetched_at` | DateTime | When OUR pipeline pulled this row in |
 
 **If this schema needs to change, the Data Engineer and Backend Developer must agree
@@ -131,10 +131,12 @@ This is the benefit of layered architecture — you can isolate problems:
   the wrong port/URL is being used. Check `python run.py` is running in `backend/`.
 - **Backend returns an empty list `[]`** → The database has no data yet. Check the
   Data Engineer has run `python run_pipeline.py` at least once.
-- **Pipeline fails with a network error** → Check your internet connection, and check
-  the `User-Agent` header is being sent (Reddit blocks requests without one).
+- **Pipeline fails with a network error** → Check your internet connection. Also
+  confirm a `User-Agent` header is being sent in `fetcher.py` — not strictly required
+  by Lobsters, but good practice and sometimes helps avoid being blocked by overly
+  aggressive network filters.
 - **Pipeline runs but backend can't find any posts** → Check both `models.py` files
-  actually point at the same `reddit.db` path, and that the schema matches.
+  actually point at the same `lobsters.db` path, and that the schema matches.
 
 Each team can test their own layer in isolation using the test files provided —
 you don't need the other two layers running to verify your own code works.
