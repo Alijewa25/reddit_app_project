@@ -1,11 +1,12 @@
-# Reddit Top Posts — Team Project
+# Lobsters Top Posts — Team Project
 
 ## What we're building
 
-A small full-stack app that shows the **top 10 posts of the month from r/programming**.
+A small full-stack app that shows the **top 10 hottest posts from Lobsters** (lobste.rs),
+a programming-focused link aggregator.
 
 ```
-Reddit's public JSON API
+Lobsters' public JSON API
         │
         ▼
 ┌─────────────────────┐
@@ -15,7 +16,7 @@ Reddit's public JSON API
 └──────────┬───────────┘
            ▼
 ┌─────────────────────┐
-│   reddit.db           │   ← Shared SQLite database
+│   lobsters.db           │   ← Shared SQLite database
 │   (SQLite file)        │
 └──────────┬───────────┘
            ▼
@@ -32,27 +33,27 @@ Reddit's public JSON API
 
 **The golden rule is the same as always: each layer only talks to the layer directly
 next to it.** The frontend never touches the database. The pipeline never touches HTTP.
-The backend never calls Reddit directly.
+The backend never calls Lobsters directly.
 
 ---
 
 ## Folder structure
 
 ```
-reddit-app/
+lobsters-app/
 │
 ├── data-pipeline/              ← DATA ENGINEER's folder
 │   ├── pipeline/
 │   │   ├── models.py           (schema — source of truth)
 │   │   ├── db.py                (database connection)
-│   │   ├── fetcher.py           (Layer 1: talk to Reddit)
+│   │   ├── fetcher.py           (Layer 1: talk to Lobsters)
 │   │   ├── transformer.py       (Layer 2: clean the data)
 │   │   └── loader.py            (Layer 3: save to database)
 │   ├── tests/
 │   │   ├── test_fetcher.py
 │   │   ├── test_transformer.py
 │   │   ├── test_loader.py
-│   │   └── sample_reddit_response.json
+│   │   └── sample_lobsters_response.json
 │   ├── run_pipeline.py          (entry point — run this!)
 │   └── requirements.txt
 │
@@ -75,7 +76,7 @@ reddit-app/
 │   ├── style.css                (already done for you!)
 │   └── app.js                   (fetch + render logic)
 │
-├── reddit.db                   ← created automatically, shared by pipeline + backend
+├── lobsters.db                   ← created automatically, shared by pipeline + backend
 │
 └── docs/                       ← read these first!
     ├── ARCHITECTURE.md          (how the 3 parts fit together)
@@ -112,7 +113,7 @@ Work in this order, because each part depends on the one before it:
 1. **Data Engineer** defines the schema in `pipeline/models.py` and shares it with
    the Backend Developer (who copies it into `backend/app/models.py`).
 2. **Data Engineer** builds the pipeline (`fetcher.py` → `transformer.py` → `loader.py`)
-   and runs it once to create `reddit.db` with real data.
+   and runs it once to create `lobsters.db` with real data.
 3. **Backend Developer** builds the API (`repository.py` → `service.py` → `routes.py`)
    and starts the Flask server.
 4. **Frontend Developer** builds `app.js` to call the running API and display results.
