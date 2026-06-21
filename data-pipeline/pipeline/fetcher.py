@@ -27,7 +27,7 @@ import requests
 # descriptive that identifies your app.
 USER_AGENT = "python:reddit-top-posts-student-project:v1.0 (by /u/Huseyn1211)"
 
-REDDIT_TOP_URL = "https://www.reddit.com/r/programming/top.json"
+REDDIT_TOP_URL = "https://old.reddit.com/r/programming/top.json"
 
 
 def fetch_top_posts_raw(time_filter: str = "month", limit: int = 10) -> dict:
