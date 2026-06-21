@@ -1,0 +1,42 @@
+{
+  "data": {
+    "children": [
+      {
+        "data": {
+          "id": "1abcde",
+          "title": "Why I switched from Python to Rust for my side project",
+          "author": "rustacean_42",
+          "score": 4521,
+          "num_comments": 312,
+          "url": "https://example.com/python-to-rust",
+          "permalink": "/r/programming/comments/1abcde/why_i_switched/",
+          "created_utc": 1716000000.0
+        }
+      },
+      {
+        "data": {
+          "id": "2fghij",
+          "title": "A deep dive into how garbage collectors actually work",
+          "author": "gc_nerd",
+          "score": 3890,
+          "num_comments": 201,
+          "url": "https://example.com/gc-deep-dive",
+          "permalink": "/r/programming/comments/2fghij/gc_deep_dive/",
+          "created_utc": 1716100000.0
+        }
+      },
+      {
+        "data": {
+          "id": "3klmno",
+          "title": "I built a database from scratch in 1000 lines of C",
+          "author": "db_builder",
+          "score": 3120,
+          "num_comments": 178,
+          "url": "https://example.com/db-from-scratch",
+          "permalink": "/r/programming/comments/3klmno/db_from_scratch/",
+          "created_utc": 1716200000.0
+        }
+      }
+    ]
+  }
+}

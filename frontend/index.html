@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+============================================================
+FRONTEND — index.html
+============================================================
+Role: Frontend Developer
+
+The page structure (header, footer, containers) is already built
+for you. Your job is mostly in app.js — fetching data from the
+backend API and inserting HTML into the containers below.
+
+The only TODO in THIS file is marked clearly below.
+============================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Top r/programming Posts</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <header class="page-header">
+      <h1>Top Posts — r/programming</h1>
+      <p>The 10 highest-scoring posts from this month, pulled from our database.</p>
+    </header>
+
+    <!--
+      TODO (Frontend Developer):
+      This <ul> is where your JavaScript will insert the list of posts.
+      Leave it empty here — app.js will fill it in using JavaScript
+      once the data has been fetched from the API.
+
+      Give it the id "post-list" so app.js can find it with
+      document.getElementById("post-list").
+    -->
+    <ul id="post-list" class="post-list">
+      <!-- Posts will be inserted here by app.js -->
+    </ul>
+
+    <!--
+      This div shows loading/error/empty messages.
+      app.js will change its text content depending on what's happening.
+      Give it the id "state-message".
+    -->
+    <div id="state-message" class="state-message">Loading posts...</div>
+
+    <footer class="page-footer">
+      <p>Data fetched from Reddit's public API and stored locally via our pipeline.</p>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

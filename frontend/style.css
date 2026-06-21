@@ -1,0 +1,157 @@
+/* ============================================================
+   STYLES — style.css
+   ============================================================
+   This file is fully written for you — the Frontend Developer's
+   job is to build the HTML structure and JS that uses these
+   classes correctly (see index.html and app.js for your TODOs).
+
+   Design: simple, black & white, hairline rules between posts.
+   No color, no shadows, no rounded corners — just clean type
+   and spacing, like a minimal reading list.
+   ============================================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  color: #111;
+  background: #fff;
+  line-height: 1.5;
+  padding: 0 20px;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 60px 0 100px;
+}
+
+/* ── HEADER ───────────────────────────────────────────── */
+
+.page-header {
+  border-bottom: 2px solid #111;
+  padding-bottom: 20px;
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.page-header p {
+  font-size: 14px;
+  color: #555;
+  margin-top: 6px;
+}
+
+/* ── POST LIST ────────────────────────────────────────── */
+
+.post-list {
+  list-style: none;
+}
+
+.post-item {
+  display: flex;
+  gap: 16px;
+  padding: 22px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.post-item:first-child {
+  padding-top: 0;
+}
+
+.post-rank {
+  flex-shrink: 0;
+  width: 28px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #999;
+  padding-top: 2px;
+}
+
+.post-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-title {
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  color: #111;
+}
+
+.post-title:hover {
+  text-decoration: underline;
+}
+
+.post-meta {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #666;
+}
+
+.post-meta span {
+  margin-right: 10px;
+}
+
+.post-meta a {
+  color: #666;
+  text-decoration: none;
+}
+
+.post-meta a:hover {
+  text-decoration: underline;
+}
+
+/* ── STATE MESSAGES (loading / error / empty) ────────────── */
+
+.state-message {
+  padding: 40px 0;
+  text-align: center;
+  font-size: 14px;
+  color: #777;
+}
+
+.state-message.error {
+  color: #b00020;
+}
+
+/* ── FOOTER ───────────────────────────────────────────── */
+
+.page-footer {
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .page {
+    padding: 40px 0 60px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .post-rank {
+    width: 22px;
+    font-size: 13px;
+  }
+
+  .post-title {
+    font-size: 15px;
+  }
+}
