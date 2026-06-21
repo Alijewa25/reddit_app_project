@@ -92,4 +92,7 @@ def transform_posts(raw_json: dict) -> list:
         HINT: A list comprehension works well here:
             return [transform_post(child["data"]) for child in raw_json["data"]["children"]]
     """
-    pass  # Remove this line when you implement the function
+    if not raw_json or "data" not in raw_json or "children" not in raw_json["data"]:
+        return []
+        
+    return [transform_post(child["data"]) for child in raw_json["data"]["children"]]
