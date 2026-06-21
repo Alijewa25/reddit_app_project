@@ -25,7 +25,7 @@ import requests
 
 # Reddit blocks default/generic User-Agents. Always send something
 # descriptive that identifies your app.
-USER_AGENT = "python:reddit-top-posts-student-project:v1.0 (by /u/your_username_here)"
+USER_AGENT = "python:reddit-top-posts-student-project:v1.0 (by /u/Huseyn1211)"
 
 REDDIT_TOP_URL = "https://www.reddit.com/r/programming/top.json"
 
@@ -66,4 +66,10 @@ def fetch_top_posts_raw(time_filter: str = "month", limit: int = 10) -> dict:
         You don't need to unpack this here — that's Layer 2's job.
         Just return the whole raw dict.
     """
-    pass  # Remove this line when you implement the function
+    params = {"t": time_filter, "limit": limit}
+    headers = {"User-Agent": USER_AGENT}
+
+    response = requests.get(REDDIT_TOP_URL, params=params, headers=headers, timeout=10)
+    response.raise_for_status()
+
+    return response.json()
