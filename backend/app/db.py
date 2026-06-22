@@ -3,12 +3,12 @@
 DATABASE CONNECTION — db.py  (Backend)
 ============================================================
 Responsibility: Creates the SQLAlchemy engine and session that the
-Flask API uses to READ from reddit.db.
+Flask API uses to READ from lobsters.db.
 
 The backend NEVER writes to the database — that's the Data Engineer's
 pipeline's job. The backend only queries (reads) data.
 
-This file points at the SAME reddit.db file as the pipeline.
+This file points at the SAME lobsters.db file as the pipeline.
 ============================================================
 """
 
@@ -17,7 +17,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # Same database file as the pipeline — project root.
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "reddit.db")
+DB_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "lobsters.db")
 DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(DATABASE_URL, echo=False)
