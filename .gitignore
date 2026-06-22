@@ -1,10 +1,14 @@
-# Virtual Environments (Bunu mütləq gizlədirik)
+# ============================================================
+# GIT IGNORE RULES — Lobsters App
+# ============================================================
+
+# Virtual Environments
 venv/
 .venv/
 env/
 .env/
 
-# Python Cache (Gərəksiz sistem faylları)
+# Python Cache & Compiled Files
 __pycache__/
 *.pyc
 *.pyo
@@ -20,5 +24,8 @@ __pycache__/
 .vscode/
 .idea/
 
-# QEYD: lobsters.db faylı bilərəkdən bura yazılmayıb ki, 
-# GitHub-a yüklənə bilsin və Backend komandasına çatsın!
+# Databases (Excluded based on Architecture Overview)
+# The frontend developer will generate their own local data 
+# or use the pipeline locally.
+backend/lobsters.db
+*.db
