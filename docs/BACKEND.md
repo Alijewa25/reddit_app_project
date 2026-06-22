@@ -2,11 +2,11 @@
 
 ## Your mission
 
-Build a Flask API that reads posts out of `reddit.db` and serves them as JSON, so the
+Build a Flask API that reads posts out of `lobsters.db` and serves them as JSON, so the
 frontend has something to fetch and display.
 
 Your code lives in `backend/`. You never write a database query directly in a Flask
-route, and you never call Reddit's API — that's the Data Engineer's job. You only
+route, and you never call Lobsters' API — that's the Data Engineer's job. You only
 read what's already in the database.
 
 ---
@@ -23,7 +23,7 @@ repository.py  →  service.py  →  routes.py
 ### 1. `app/models.py` — the schema (coordinate with your Data Engineer)
 
 This MUST match `data-pipeline/pipeline/models.py` exactly — both files describe the
-same `posts` table in the same `reddit.db` file. Get this from your Data Engineer
+same `posts` table in the same `lobsters.db` file. Get this from your Data Engineer
 teammate as soon as they've finished it, and keep both files in sync if it ever changes.
 
 This file also has one extra method beyond the pipeline's version: `to_dict()`. This
@@ -66,7 +66,7 @@ cd backend
 pip install -r requirements.txt
 
 # Make sure the Data Engineer has already run the pipeline once,
-# so reddit.db actually has data in it!
+# so lobsters.db actually has data in it!
 
 # Start the server:
 python run.py

@@ -2,11 +2,12 @@
 
 ## Your mission
 
-Build a pipeline that pulls the top posts of the month from r/programming and stores
-them in a local SQLite database, so the backend can read them later.
+Build a pipeline that pulls the hottest current posts from **Lobsters** (lobste.rs),
+a programming-focused link aggregator, and stores them in a local SQLite database,
+so the backend can read them later.
 
 Your code lives in `data-pipeline/`. You never touch Flask or HTML — your job ends
-once clean data is sitting in `reddit.db`.
+once clean data is sitting in `lobsters.db`.
 
 ---
 
@@ -16,7 +17,7 @@ once clean data is sitting in `reddit.db`.
 fetcher.py  →  transformer.py  →  loader.py
 (get raw       (clean it up       (save it to
  JSON from      into our           the database)
- Reddit)        schema)
+ Lobsters)      schema)
 ```
 
 ### 1. `pipeline/models.py` — the schema (do this FIRST)
@@ -25,25 +26,26 @@ This defines the `posts` table. Every other file depends on this being correct.
 Once you've filled in the TODOs here, **send this file to your Backend teammate**
 so they can copy the same schema into their own `models.py`.
 
-### 2. `pipeline/fetcher.py` — talk to Reddit
+### 2. `pipeline/fetcher.py` — talk to Lobsters
 
-Reddit has a public JSON endpoint for any subreddit — just add `.json` to the URL:
+Lobsters has a simple, fully public JSON endpoint — no login, no API key, no OAuth:
 
 ```
-https://www.reddit.com/r/programming/top.json?t=month&limit=10
+https://lobste.rs/hottest.json
 ```
 
-No login, no API key needed. Reddit requires a descriptive `User-Agent` header on
-every request — if you don't send one (or send a generic one like Python's default),
-Reddit will almost certainly block you. Sending a good User-Agent is necessary, but
-it is **not a guarantee**: Reddit's bot detection also looks at things like your IP
-address, and it has gotten noticeably stricter over time. Even with a perfect header,
-you may still hit a `403 Forbidden` sometimes. See the **Troubleshooting** section
-below — this is expected and not a sign your code is wrong.
+It returns a flat JSON array of the current front-page stories, already ranked by
+Lobsters' own "hottest" algorithm (a mix of score and recency). There's no "top this
+month" time-window parameter like some other sites have — `hottest.json` always
+gives you the current front page, and that's what we treat as our "top posts".
+
+It's good practice to still send a descriptive `User-Agent` header identifying your
+app, even though Lobsters doesn't strictly require one the way some other sites do.
 
 ### 3. `pipeline/transformer.py` — clean the data
 
-Reddit's raw JSON is deeply nested and has way more fields than we need. This layer's
+Lobsters' raw JSON has some fields we don't need, and one important bit of nesting:
+the username is inside a `submitter_user` object, not a flat field. This layer's
 job is to pull out exactly the fields we care about and reshape them to match our
 `models.py` schema — nothing more.
 
@@ -52,7 +54,7 @@ no network, no database.
 
 ### 4. `pipeline/loader.py` — save to the database
 
-Takes the clean list of dicts and writes them into `reddit.db` using SQLAlchemy.
+Takes the clean list of dicts and writes them into `lobsters.db` using SQLAlchemy.
 
 One important real-world detail: **if you run the pipeline twice, you shouldn't get
 duplicate rows.** Posts you've already seen should have their score/comment count
@@ -71,7 +73,7 @@ pip install -r requirements.txt
 python run_pipeline.py
 
 # Or test each layer individually as you build it:
-python tests/test_transformer.py   # no internet needed — uses sample_reddit_response.json
+python tests/test_transformer.py   # no internet needed — uses sample_lobsters_response.json
 python tests/test_fetcher.py        # no internet needed — mocks the network call
 python tests/test_loader.py         # uses a temporary test database, not your real one
 ```
@@ -84,8 +86,9 @@ the real internet to fully verify, even though its test is mocked).
 
 ## A note on the sample data file
 
-`tests/sample_reddit_response.json` is a small, fixed, fake example of what Reddit's
-real response looks like. We use it instead of the live API in tests because:
+`tests/sample_lobsters_response.json` is a small, fixed, fake example of what
+Lobsters' real response looks like. We use it instead of the live API in tests
+because:
 
 - Tests run instantly, with no network delay
 - Tests don't fail just because your WiFi is down
@@ -97,55 +100,89 @@ snapshot.
 
 ---
 
-## Common pitfalls
+## Understanding the raw data shape
 
-- **Forgetting the User-Agent header** → Reddit will almost certainly block your
-  request without one. Always send a descriptive one — but note it doesn't guarantee
-  success every time (see Troubleshooting below).
-- **Not handling the `t3_` prefix** → Reddit's raw `id` field doesn't include `t3_`,
-  but our `post_id` column should. Check `transform_post`'s docstring carefully.
-- **Relative vs absolute permalinks** → Reddit gives you `/r/programming/comments/...`
-  (a relative path). You need to prepend `https://www.reddit.com` yourself.
-- **Running the pipeline before `models.py` is finished** → `loader.py` imports `Post`
-  from `models.py`, so the schema must be complete first.
-- **Confusing `created_utc` and `fetched_at`** → `created_utc` comes from Reddit (when
-  the post was made). `fetched_at` is generated by YOUR code (when you pulled the data).
+Lobsters returns a **flat JSON array** — not a deeply nested object like some other
+sites' APIs. One story looks like this (trimmed to the fields we care about):
+
+```json
+{
+  "short_id": "xacdsk",
+  "title": "Secret EU law threatens Internet security",
+  "url": "https://last-chance-for-eidas.org/",
+  "score": 32,
+  "comment_count": 16,
+  "comments_url": "https://lobste.rs/s/xacdsk/secret_eu_law_threatens_internet",
+  "created_at": "2023-11-02T03:47:05.000-05:00",
+  "submitter_user": {
+    "username": "galadran"
+  }
+}
+```
+
+Mapping this to our schema:
+
+| Our schema field | Comes from | Notes |
+|---|---|---|
+| `post_id` | `short_id` | Already short and unique — no prefix needed |
+| `title` | `title` | Direct copy |
+| `author` | `submitter_user.username` | **Nested** — one level deeper than the rest |
+| `score` | `score` | Direct copy |
+| `num_comments` | `comment_count` | Different field name |
+| `url` | `url` | Direct copy |
+| `permalink` | `comments_url` | Already a full URL — don't prepend anything |
+| `created_utc` | `created_at` | An ISO 8601 **string** — must be converted to a Unix timestamp float |
+| `fetched_at` | *(generated by us)* | When our pipeline ran, not part of Lobsters' data |
 
 ---
 
-## Troubleshooting: "I'm getting a 403 Forbidden from Reddit"
+## Common pitfalls
 
-This is common — it does not mean your code is broken. Reddit's anti-bot detection
-on the public `.json` endpoint has gotten stricter over time, and it looks at more
-than just your `User-Agent` header (your IP address matters too, and school/shared
-WiFi or cloud environments are sometimes flagged more aggressively than a home
-connection). Try these in order:
+- **Forgetting `author` is nested.** It's `raw_post_data["submitter_user"]["username"]`,
+  not a flat `raw_post_data["author"]`. This trips people up because most of the
+  other fields are flat.
+- **Re-prepending a domain to `permalink`.** Unlike some other APIs, Lobsters'
+  `comments_url` is already a complete, absolute URL. Adding `https://lobste.rs` in
+  front of it would produce a broken double URL.
+- **Treating `created_at` as a number.** It's a string in ISO 8601 format
+  (`"2023-11-02T03:47:05.000-05:00"`), not a Unix timestamp like some other APIs use.
+  You need `datetime.fromisoformat(...)` and then `.timestamp()` to convert it to the
+  float our schema expects.
+- **Running the pipeline before `models.py` is finished.** `loader.py` imports `Post`
+  from `models.py`, so the schema must be complete first.
+- **Confusing `created_utc` and `fetched_at`.** `created_utc` comes from Lobsters
+  (when the post was originally submitted there). `fetched_at` is generated by YOUR
+  code (when you pulled the data).
+- **Forgetting `transform_posts` takes a flat list, not a nested dict.** Lobsters'
+  raw response is just `[ {...}, {...}, ... ]` — there's no `.data.children` wrapper
+  to dig through like some other APIs have.
 
-1. **Check your User-Agent is actually descriptive.** It should look like
-   `"python:your-app-name:v1.0 (by /u/your_username)"` — not the `requests` library's
-   default, and not something generic like `"Mozilla"` copy-pasted from somewhere.
-   Open `pipeline/fetcher.py` and confirm `USER_AGENT` has been customized.
+---
 
-2. **Try `old.reddit.com` instead of `www.reddit.com`.** Same JSON data, sometimes
-   less aggressively gated:
-   ```
-   https://old.reddit.com/r/programming/top.json?t=month&limit=10
-   ```
-   You can test this quickly by changing `REDDIT_TOP_URL` in `fetcher.py`.
+## Troubleshooting: "I'm getting a 403 Forbidden / connection error from Lobsters"
+
+This is less common than with some other APIs, since Lobsters' `.json` endpoints are
+intentionally public and don't require authentication — but it can still happen
+(temporary outages, aggressive school/shared network filtering, or being rate-limited
+if you've been re-running the pipeline very frequently). Try these in order:
+
+1. **Check your User-Agent is set.** It should look like
+   `"python:your-app-name:v1.0 (by /u/your_username)"`, not the `requests` library's
+   bare default. Open `pipeline/fetcher.py` and confirm `USER_AGENT` is set.
+
+2. **Try the URL directly in a browser tab.** If `https://lobste.rs/hottest.json`
+   loads fine there but not in your script, the problem is specific to your script's
+   request (headers, or a corporate/school proxy blocking non-browser traffic) rather
+   than Lobsters being down.
 
 3. **Wait a bit and try again.** If you've been re-running the pipeline a lot while
-   testing, you may be temporarily rate-limited. Waiting 5–10 minutes often clears it.
+   testing, you may be temporarily rate-limited.
 
-4. **Check it isn't your network.** Try the same URL in a regular browser tab. If it
-   works there but not in your script, it's almost certainly the bot-detection /
-   User-Agent issue above, not a connectivity problem.
-
-5. **If none of that works during class time, don't get stuck on this.** Your
+4. **If none of that works during class time, don't get stuck on this.** Your
    `transformer.py` and `loader.py` work can be fully built and tested without ever
-   touching the live Reddit API — `tests/sample_reddit_response.json` gives you a
+   touching the live Lobsters API — `tests/sample_lobsters_response.json` gives you a
    real example response to develop against. You can finish and test those two
-   layers, and circle back to a live `fetcher.py` run later (e.g. from home, or
-   after waiting out a rate limit).
+   layers, and circle back to a live `fetcher.py` run later.
 
 This is also a realistic lesson in its own right: **any pipeline that depends on an
 external API needs to handle that API being unreliable.** Production data pipelines
@@ -161,5 +198,5 @@ Run all three test files and confirm everything passes, then run:
 python run_pipeline.py
 ```
 
-Check that `reddit.db` was created in the project root (`reddit-app/reddit.db`).
+Check that `lobsters.db` was created in the project root (`lobsters-app/lobsters.db`).
 That's your hand-off point to the Backend team — they'll read from this exact file.

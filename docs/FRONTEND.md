@@ -2,10 +2,10 @@
 
 ## Your mission
 
-Build the page that shows the top 10 posts of the month from r/programming, by
+Build the page that shows the top 10 hottest posts from Lobsters (lobste.rs), by
 fetching data from the Backend API and rendering it as HTML.
 
-Your code lives in `frontend/`. You never touch SQLite, SQLAlchemy, or Reddit's API
+Your code lives in `frontend/`. You never touch SQLite, SQLAlchemy, or Lobsters' API
 directly — your only job is to call the Backend's endpoints and display what comes
 back.
 
@@ -102,13 +102,13 @@ back that looks like this:
   "data": [
     {
       "id": 1,
-      "post_id": "t3_1abcde",
+      "post_id": "1abcde",
       "title": "Why I switched from Python to Rust for my side project",
       "author": "rustacean_42",
       "score": 4521,
       "num_comments": 312,
       "url": "https://example.com/python-to-rust",
-      "permalink": "https://www.reddit.com/r/programming/comments/1abcde/...",
+      "permalink": "https://lobste.rs/s/1abcde/why_i_switched_from_python_to_rust",
       "created_utc": 1716000000.0,
       "fetched_at": "2024-05-18T10:00:00+00:00"
     }
@@ -120,7 +120,7 @@ back that looks like this:
 Two URL fields to be careful with:
 - **`url`** — what the actual post links to (an article, repo, etc). Use this for
   the post title link.
-- **`permalink`** — always links to the Reddit comments page. Use this for the
+- **`permalink`** — always links to the Lobsters comments page. Use this for the
   "X comments" link.
 
 ---

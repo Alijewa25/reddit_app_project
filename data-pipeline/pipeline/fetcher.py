@@ -4,72 +4,90 @@ PIPELINE LAYER 1 — FETCHER
 ============================================================
 Role: Data Engineer
 
-Responsibility: Talk to Reddit's public JSON endpoint and return
+Responsibility: Talk to Lobsters' public JSON endpoint and return
 the RAW response data. This layer does NOT clean, validate, or
-reshape anything — it just fetches and hands back what Reddit gave us.
+reshape anything — it just fetches and hands back what Lobsters gave us.
 
 Why a separate layer for this?
-  - If Reddit changes their API, only this file needs to change.
+  - If Lobsters changes their API, only this file needs to change.
   - We can test the rest of the pipeline with fake fetched data,
     without needing the internet.
 
-IMPORTANT — Reddit requires a descriptive User-Agent header.
-Requests without one (or with a generic one like "python-requests")
-will be blocked or heavily rate-limited. This is documented in
-Reddit's own API rules: always identify your app, platform, and
-a contact username.
+ABOUT THE DATA SOURCE — lobste.rs:
+Lobsters (lobste.rs) is a programming-focused link aggregator. It has
+simple, public, unauthenticated JSON endpoints — no API key, no login,
+no OAuth needed:
+
+    https://lobste.rs/hottest.json   <- "hottest" front page stories
+    https://lobste.rs/newest.json    <- newest submitted stories
+
+There is no "top this month" time-window parameter — Lobsters'
+"hottest" endpoint is its own ranking algorithm (a mix of score and
+recency), and that's what we use here as our "top posts" source.
+It's good practice to still send a descriptive User-Agent identifying
+your app, even though it isn't strictly required.
 ============================================================
 """
 
 import requests
 
-# Reddit blocks default/generic User-Agents. Always send something
-# descriptive that identifies your app.
-USER_AGENT = "python:reddit-top-posts-student-project:v1.0 (by /u/Huseyn1211)"
+# Good practice: always identify your app with a descriptive User-Agent,
+# even for APIs that don't strictly require one.
+USER_AGENT = "python:lobsters-top-posts-student-project:v1.0 (by Huseyn1211)"
 
-REDDIT_TOP_URL = "https://old.reddit.com/r/programming/top.json"
+LOBSTERS_HOTTEST_URL = "https://lobste.rs/hottest.json"
 
 
-def fetch_top_posts_raw(time_filter: str = "month", limit: int = 10) -> dict:
+def fetch_top_posts_raw(limit: int = 10) -> list:
     """
-    Fetches the raw top-posts JSON from Reddit for r/programming.
+    Fetches the raw "hottest" stories JSON from Lobsters.
 
     Args:
-        time_filter (str): Reddit's time window — "month" gives us
-                            "top posts this month". Other valid values
-                            Reddit accepts: "day", "week", "year", "all".
-        limit (int): How many posts to request (Reddit allows up to 100).
+        limit (int): How many stories we ultimately want to keep.
+                     Lobsters' hottest.json always returns its full
+                     front-page list (usually 25) in one response —
+                     there's no `limit` query param to ask for fewer.
+                     We still accept `limit` here so the function
+                     signature matches how the rest of the pipeline
+                     calls it; trimming to `limit` happens in Layer 2
+                     (the transformer), not here.
 
     Returns:
-        dict: The raw parsed JSON response from Reddit.
+        list: The raw parsed JSON response from Lobsters — a LIST of
+              story dicts (there's no wrapping "data" object; Lobsters
+              just returns a flat JSON array).
 
     Raises:
-        requests.HTTPError: If Reddit responds with an error status code.
+        requests.HTTPError: If Lobsters responds with an error status code.
 
     TODO:
-        - Build a `params` dict: {"t": time_filter, "limit": limit}
         - Build a `headers` dict: {"User-Agent": USER_AGENT}
-        - Call requests.get(REDDIT_TOP_URL, params=params, headers=headers, timeout=10)
+        - Call requests.get(LOBSTERS_HOTTEST_URL, headers=headers, timeout=10)
         - Call response.raise_for_status() to raise an error on bad status codes
         - Return response.json()
 
-    HINT: Reddit's JSON shape looks like this (simplified):
-        {
-          "data": {
-            "children": [
-              { "data": { "id": "...", "title": "...", "author": "...", ... } },
-              { "data": { ... } },
-              ...
-            ]
-          }
-        }
-        You don't need to unpack this here — that's Layer 2's job.
-        Just return the whole raw dict.
+    HINT: Lobsters' JSON shape looks like this (simplified, one story):
+        [
+          {
+            "short_id": "xacdsk",
+            "title": "Secret EU law threatens Internet security",
+            "url": "https://last-chance-for-eidas.org/",
+            "score": 32,
+            "comment_count": 16,
+            "comments_url": "https://lobste.rs/s/xacdsk/secret_eu_law...",
+            "created_at": "2023-11-02T03:47:05.000-05:00",
+            "submitter_user": { "username": "galadran", ... },
+            "tags": ["browsers", "cryptography"]
+          },
+          { ... },
+          ...
+        ]
+        It's a flat list — no nested wrapper object to dig through.
+        You don't need to unpack anything here — that's Layer 2's job.
+        Just return the whole raw list.
     """
-    params = {"t": time_filter, "limit": limit}
     headers = {"User-Agent": USER_AGENT}
-
-    response = requests.get(REDDIT_TOP_URL, params=params, headers=headers, timeout=10)
+    response = requests.get(LOBSTERS_HOTTEST_URL, headers=headers, timeout=10)
     response.raise_for_status()
 
     return response.json()
