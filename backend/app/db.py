@@ -17,8 +17,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # Same database file as the pipeline — project root.
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "reddit.db")
-DATABASE_URL = f"sqlite:///{DB_PATH}"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+DATABASE_URL = f"sqlite:///{os.path.join(BASE_DIR, 'lobsters.db')}"
 
 engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
