@@ -3,7 +3,7 @@
 DATABASE CONNECTION — db.py
 ============================================================
 Responsibility: Creates the SQLAlchemy engine and session that
-the rest of the pipeline uses to talk to reddit.db.
+the rest of the pipeline uses to talk to lobsters.db.
 
 This is plumbing, not business logic — you only need to
 understand it, not necessarily write all of it from scratch.
@@ -18,7 +18,7 @@ from pipeline.models import Base
 
 # The SQLite database file lives at the project root, shared
 # between the pipeline and the backend.
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "reddit.db")
+DB_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "lobsters.db")
 DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 # The engine is the entry point to the database.

@@ -1,0 +1,77 @@
+[
+  {
+    "short_id": "1abcde",
+    "short_id_url": "https://lobste.rs/s/1abcde",
+    "created_at": "2024-05-18T10:00:00.000-05:00",
+    "title": "Why I switched from Python to Rust for my side project",
+    "url": "https://example.com/python-to-rust",
+    "score": 4521,
+    "flags": 0,
+    "comment_count": 312,
+    "description": "",
+    "comments_url": "https://lobste.rs/s/1abcde/why_i_switched_from_python_to_rust",
+    "submitter_user": {
+      "username": "rustacean_42",
+      "created_at": "2018-01-01T00:00:00.000-05:00",
+      "is_admin": false,
+      "about": "",
+      "is_moderator": false,
+      "karma": 1000,
+      "avatar_url": "/avatars/rustacean_42-100.png"
+    },
+    "tags": [
+      "rust",
+      "python"
+    ]
+  },
+  {
+    "short_id": "2fghij",
+    "short_id_url": "https://lobste.rs/s/2fghij",
+    "created_at": "2024-05-19T14:30:00.000-05:00",
+    "title": "A deep dive into how garbage collectors actually work",
+    "url": "https://example.com/gc-deep-dive",
+    "score": 3890,
+    "flags": 0,
+    "comment_count": 201,
+    "description": "",
+    "comments_url": "https://lobste.rs/s/2fghij/a_deep_dive_into_how_garbage_collectors",
+    "submitter_user": {
+      "username": "gc_nerd",
+      "created_at": "2017-03-15T00:00:00.000-05:00",
+      "is_admin": false,
+      "about": "",
+      "is_moderator": false,
+      "karma": 2500,
+      "avatar_url": "/avatars/gc_nerd-100.png"
+    },
+    "tags": [
+      "compsci",
+      "performance"
+    ]
+  },
+  {
+    "short_id": "3klmno",
+    "short_id_url": "https://lobste.rs/s/3klmno",
+    "created_at": "2024-05-20T08:15:00.000-05:00",
+    "title": "I built a database from scratch in 1000 lines of C",
+    "url": "https://example.com/db-from-scratch",
+    "score": 3120,
+    "flags": 0,
+    "comment_count": 178,
+    "description": "",
+    "comments_url": "https://lobste.rs/s/3klmno/i_built_a_database_from_scratch",
+    "submitter_user": {
+      "username": "db_builder",
+      "created_at": "2019-06-20T00:00:00.000-05:00",
+      "is_admin": false,
+      "about": "",
+      "is_moderator": false,
+      "karma": 800,
+      "avatar_url": "/avatars/db_builder-100.png"
+    },
+    "tags": [
+      "c",
+      "databases"
+    ]
+  }
+]
