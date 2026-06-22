@@ -36,29 +36,19 @@ Base = declarative_base()
 class Post(Base):
     __tablename__ = "posts"
 
-    # TODO: id = Column(Integer, primary_key=True, autoincrement=True)
-
-    # TODO: post_id = Column(String, unique=True, nullable=False)
-
-    # TODO: title = Column(String, nullable=False)
-
-    # TODO: author = Column(String, nullable=False)
-
-    # TODO: score = Column(Integer, nullable=False)
-
-    # TODO: num_comments = Column(Integer, nullable=False)
-
-    # TODO: url = Column(String, nullable=False)
-
-    # TODO: permalink = Column(String, nullable=False)
-
-    # TODO: created_utc = Column(Float, nullable=False)
-
-    # TODO: fetched_at = Column(DateTime, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    post_id = Column(String, unique=True, nullable=False)
+    title = Column(String, nullable=False)
+    author = Column(String, nullable=False)
+    score = Column(Integer, nullable=False)
+    num_comments = Column(Integer, nullable=False)
+    url = Column(String, nullable=False)
+    permalink = Column(String, nullable=False)
+    created_utc = Column(Float, nullable=False)
+    fetched_at = Column(DateTime, nullable=False)
 
     def __repr__(self):
-        # TODO: return f"<Post id={self.id} title={self.title[:30]!r} score={self.score}>"
-        pass
+        return f"<Post id={self.id} title={self.title[:30]!r} score={self.score}>"
 
     def to_dict(self) -> dict:
         """
@@ -87,4 +77,15 @@ class Post(Base):
             datetimes directly, so we convert it to a string with
             .isoformat() (or None if it's missing).
         """
-        pass  # Remove this line when you implement the function
+        return {
+            "id": self.id,
+            "post_id": self.post_id,
+            "title": self.title,
+            "author": self.author,
+            "score": self.score,
+            "num_comments": self.num_comments,
+            "url": self.url,
+            "permalink": self.permalink,
+            "created_utc": self.created_utc,
+            "fetched_at": self.fetched_at.isoformat() if self.fetched_at else None,
+        }
