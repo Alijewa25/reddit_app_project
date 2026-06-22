@@ -27,5 +27,5 @@ __pycache__/
 # Databases (Excluded based on Architecture Overview)
 # The frontend developer will generate their own local data 
 # or use the pipeline locally.
-backend/lobsters.db
+lobsters.db
 *.db
