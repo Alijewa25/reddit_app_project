@@ -65,6 +65,16 @@ function setStateMessage(text, isError = false) {
   //   - If text is empty (""), hide the element entirely:
   //     stateMessageEl.style.display = "none"
   //     Otherwise make sure it's visible: stateMessageEl.style.display = ""
+      stateMessageEL.textConetnt = text;
+  if(isError === true){
+    sateMessageEL.classList.add("error");
+  }else if(isError === false){
+    stateMessageEL.classlist.remove("error");
+  }else if(text === ""){
+    stateMessageEL.style.display = "none";
+  }else if(text !== ""){
+    stateMessageEL.style.display = "";
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -124,7 +134,23 @@ function setStateMessage(text, isError = false) {
  *     - Use formatDate(post.created_utc) for a readable date.
  */
 function buildPostHTML(post, rank) {
-  // Remove this line and write your return statement
+  <li class="post-item">
+  <div class="post-rank">${rank}</div>
+  <div class="post-body">
+    <a class="post-title" href="${post.url}" target="_blank" rel="noopener">
+      ${post.title}
+    </a>
+    <div class="post-meta">
+      <span>${post.score} points</span>
+      <span>by ${post.author}</span>
+      <span>${formatDate(post.created_utc)}</span>
+      <a href="${post.permalink}" target="_blank" rel="noopener">
+        $post.num_comments comments
+      </a>
+    </div>
+  </div>
+</li>
+function buildPostHTML(post, rank) {
 }
 
 /**
@@ -149,7 +175,14 @@ function buildPostHTML(post, rank) {
  *     postListEl.innerHTML = html;
  */
 function renderPosts(posts) {
-  // Remove this line and write your implementation
+  if(posts.length === 0){
+  setStateMessage("No posts found. Has the pipeline been run yet?");
+  return;
+}else if(posts.length > 0){
+  setStateMessage("");
+  const html = posts.map((post, index) => buildPostHTML(post, index + 1)).join("");
+  postListEl.innerHTML = html;
+}
 }
 
 // ─────────────────────────────────────────────
@@ -205,7 +238,23 @@ function renderPosts(posts) {
  *   }
  */
 async function fetchTopPosts() {
-  // Remove this line and write your implementation
+  setStateMessage("Loading posts...");
+try{
+  const response = await fetch(`${API_BASE_URL}/api/posts/top?limit=10`);
+  if(!response.ok){
+    throw new Error(`Server responded with status ${response.status}`);
+  }
+  const result = await response.json();
+  if(result.success){
+    renderPosts(result.data);
+  }else{
+    setStateMessage(result.error || "Sommething went wrong ", true);
+
+  }
+  }catch(error){
+    console.error(error);
+    setStateMessage("Cloud not reach the API. Is the backend server running on port 5000?", true);
+  }
 }
 
 // ─────────────────────────────────────────────
