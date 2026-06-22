@@ -1,0 +1,24 @@
+# Virtual Environments (Bunu mütləq gizlədirik)
+venv/
+.venv/
+env/
+.env/
+
+# Python Cache (Gərəksiz sistem faylları)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Testing and Coverage
+.pytest_cache/
+.coverage
+
+# OS and IDE Files
+.DS_Store
+.vscode/
+.idea/
+
+# QEYD: lobsters.db faylı bilərəkdən bura yazılmayıb ki, 
+# GitHub-a yüklənə bilsin və Backend komandasına çatsın!
