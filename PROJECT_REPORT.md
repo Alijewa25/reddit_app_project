@@ -13,7 +13,7 @@
 1. [Executive Summary](#1-executive-summary)
 2. [System Architecture Overview](#2-system-architecture-overview)
 3. [The Team & Engineering Roles](#3-the-team--engineering-roles)
-4. [Production Snapshot](#4-production-snapshot)
+4. [Production Snapshot](#4-production)
 5. [Agile & Kanban Methodology](#5-agile--kanban-methodology)
 6. [Technical Implementation Details](#6-technical-implementation-details)
 7. [Technical Deployment Guide](#7-technical-deployment-guide)
