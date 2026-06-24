@@ -144,7 +144,7 @@ Bayramov designed and implemented the full Extract-Transform-Load pipeline that 
 
 ---
 
-## 4. Production Snapshot
+## 4. Production
 
 The following gif captures the application running in a fully integrated production-equivalent local environment, with the Flask backend serving live data fetched from Lobsters and rendered in the browser client:
 
