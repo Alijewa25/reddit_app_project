@@ -146,9 +146,9 @@ Bayramov designed and implemented the full Extract-Transform-Load pipeline that 
 
 ## 4. Production Snapshot
 
-The following screenshot captures the application running in a fully integrated production-equivalent local environment, with the Flask backend serving live data fetched from Lobsters and rendered in the browser client:
+The following gif captures the application running in a fully integrated production-equivalent local environment, with the Flask backend serving live data fetched from Lobsters and rendered in the browser client:
 
-![Lobsters App Production Snapshot](lobsters.png)
+![Lobsters App Production gif](project.gif)
 
 *Figure 1 — Lobsters App running at `localhost:3000`: Top 10 hottest posts rendered by the Vanilla JS client, consuming the Flask REST API backed by the SQLite data pipeline. Posts are ranked by score, each showing title, point count, author, date, and comment count — all sourced live from the `lobsters.db` database.*
 
